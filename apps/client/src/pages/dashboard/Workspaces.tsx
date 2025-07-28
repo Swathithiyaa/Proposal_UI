@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FiFolder, FiPlus, FiSearch, FiTag, FiTrash2 } from 'react-icons/fi';
+import { FiFolder, FiPlus, FiSearch, FiTag, FiTrash2, FiArrowRight, FiLoader } from 'react-icons/fi';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useSections } from '../../hooks/useSections';
@@ -94,23 +94,29 @@ const Workspaces: React.FC = () => {
   };
 
   return (
-    <div className="min-h-full bg-white">
-      <div className="bg-white border-b border-gray-200">
-        <div className="px-8 py-6">
+    <div className="min-h-full bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header Section */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="px-8 py-8">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Content Workspaces</h1>
-              <p className="text-gray-600 mt-1">
-                Organize and manage your reusable content libraries
-              </p>
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
+                <FiFolder className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Content Workspaces</h1>
+                <p className="text-gray-600 mt-2 text-lg">
+                  Organize and manage your reusable content libraries
+                </p>
+              </div>
             </div>
-            <div className="flex items-center space-x-3 mb-6">
+            <div className="flex items-center space-x-4">
               {workspaces.length > 0 && (
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                  className="bg-gradient-to-r from-primary to-primary/90 text-white px-6 py-3 rounded-xl font-semibold hover:from-primary/90 hover:to-primary transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 >
-                  <FiPlus className="w-4 h-4 inline mr-2" />
+                  <FiPlus className="w-5 h-5 inline mr-2" />
                   New Workspace
                 </button>
               )}
@@ -119,58 +125,74 @@ const Workspaces: React.FC = () => {
         </div>
       </div>
 
-      <div className="px-8 py-8">
+      {/* Main Content */}
+      <div className="px-8 py-12">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8 space-y-4">
+          {/* Search and Filter Section */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8">
+            <div className="space-y-6">
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search workspaces..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full md:w-96 pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition duration-200"
+                className="w-full md:w-96 pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 shadow-sm"
               />
             </div>
 
             {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                <span className="text-sm font-medium text-gray-700 mr-2 py-2">Filter by tags:</span>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Filter by Tags</h3>
+                <div className="flex flex-wrap gap-3">
                 {tags.map((tag) => (
                   <button
                     key={tag}
                     onClick={() => toggleTag(tag)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+                    className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all duration-200 ${
                       selectedTags.includes(tag)
-                        ? 'bg-primary text-white border-primary'
-                        : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-primary/10 hover:border-primary/20'
+                        ? 'bg-primary text-white border-primary shadow-md'
+                        : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-primary/10 hover:border-primary/30 hover:shadow-sm'
                     }`}
                   >
+                    <FiTag className="inline w-3 h-3 mr-1" />
                     {tag}
                   </button>
                 ))}
                 {selectedTags.length > 0 && (
                   <button
                     onClick={() => setSelectedTags([])}
-                    className="px-3 py-1 rounded-full text-sm font-medium text-gray-500 border border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="px-4 py-2 rounded-xl text-sm font-medium text-gray-500 border border-gray-200 hover:bg-gray-50 transition-all duration-200"
                   >
                     Clear filters
                   </button>
                 )}
+                </div>
               </div>
             )}
+            </div>
           </div>
 
+          {/* Workspaces Grid */}
           {loading ? (
-            <div className="text-center py-20 text-gray-500">Loading...</div>
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <FiLoader className="w-8 h-8 animate-spin text-primary" />
+                </div>
+                <p className="text-gray-600 font-medium">Loading workspaces...</p>
+              </div>
+            </div>
           ) : workspaces.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {workspaces.map((workspace) => (
                 <div
                   key={workspace.id}
                   onClick={() => navigate(`/dashboard/workspaces/${workspace.id}`)}
-                  className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md hover:border-gray-300 transition-all duration-200 cursor-pointer group relative"
+                  className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-primary/30 transition-all duration-300 cursor-pointer group relative hover:-translate-y-1"
                 >
+                  {/* Delete Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -178,34 +200,42 @@ const Workspaces: React.FC = () => {
                         deleteWorkspace(workspace.id);
                       }
                     }}
-                    className="absolute top-3 right-3 p-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-full focus:outline-none focus:ring-2 focus:ring-red-300 z-10"
+                    className="absolute top-4 right-4 p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-300 z-10"
                     title="Delete workspace"
                   >
                     <FiTrash2 className="w-4 h-4" />
                   </button>
-                  <div className="flex items-start justify-between mb-4">
+                  
+                  {/* Workspace Content */}
+                  <div className="flex items-start justify-between mb-6">
                     <div className="flex-1">
-                      <div className="flex items-center mb-3">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                          <FiFolder className="w-5 h-5 text-primary" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
+                          <FiFolder className="w-6 h-6 text-primary" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary transition-colors">
-                          {workspace.name}
-                        </h3>
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors duration-200 leading-tight">
+                            {workspace.name}
+                          </h3>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span className="text-xs text-green-600 font-medium">Active</span>
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-gray-600 text-sm mb-4">
-                        Content library for reusable proposal components
+                      <p className="text-gray-600 mb-6 leading-relaxed">
+                        <span className="font-medium">Client:</span> {workspace.clientName || 'No client specified'}
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {workspace.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {workspace.tags.slice(0, 3).map((tag) => (
                           <span
                             key={tag}
-                            className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-md font-medium flex items-center"
+                            className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full font-semibold flex items-center border border-primary/20"
                           >
                             <FiTag className="w-3 h-3 mr-1" />
                             {tag}
@@ -219,24 +249,32 @@ const Workspaces: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                      <span>Content pieces: {sectionCounts[workspace.id] ?? 0}</span>
-                      <span>Last updated: Today</span>
+                    <div className="pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center space-x-4">
+                          <span className="text-gray-600">
+                            <span className="font-semibold text-gray-900">{sectionCounts[workspace.id] ?? 0}</span> content pieces
+                          </span>
+                          <span className="text-gray-400">•</span>
+                          <span className="text-gray-600">Updated today</span>
+                        </div>
+                        <FiArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-20">
-              <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FiFolder className="w-8 h-8 text-gray-400" />
+            <div className="text-center py-24">
+              <div className="max-w-lg mx-auto">
+                <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg">
+                  <FiFolder className="w-12 h-12 text-gray-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   {search || selectedTags.length > 0 ? 'No workspaces found' : 'No workspaces yet'}
                 </h3>
-                <p className="text-gray-600 mb-8">
+                <p className="text-gray-600 mb-10 text-lg leading-relaxed">
                   {search || selectedTags.length > 0
                     ? 'Try adjusting your search or filter criteria'
                     : 'Create your first workspace to organize reusable content'}
@@ -244,8 +282,9 @@ const Workspaces: React.FC = () => {
                 {!search && selectedTags.length === 0 && (
                   <button
                     onClick={() => setShowCreateModal(true)}
-                    className="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                    className="bg-gradient-to-r from-primary to-primary/90 text-white px-8 py-4 rounded-xl font-semibold hover:from-primary/90 hover:to-primary transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                   >
+                    <FiPlus className="w-5 h-5 inline mr-2" />
                     Add New Workspace
                   </button>
                 )}
@@ -254,9 +293,11 @@ const Workspaces: React.FC = () => {
           )}
         </div>
       </div>
+      
+      {/* Create Workspace Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
             <CreateWorkspace
               onWorkspaceCreated={handleWorkspaceCreated}
               onClose={() => setShowCreateModal(false)}

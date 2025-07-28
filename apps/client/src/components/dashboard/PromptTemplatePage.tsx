@@ -287,73 +287,118 @@ const PromptTemplatePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-gray-50 to-gray-100/50 font-sans">
-      <div className="max-w-5xl mx-auto px-8 py-10">
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 w-full p-8 mb-10">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2 justify-center">
-              <FiFileText className="w-7 h-7 text-slate-400" /> Prompt Templates
+    <div className="min-h-full bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header Section */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-8 py-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
+                <FiFileText className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Prompt Templates</h1>
+                <p className="text-gray-600 text-lg mt-1">
+                  Manage and customize AI prompts for different content sections
+                </p>
+              </div>
+            </div>
             </h2>
             <button
               onClick={handleSeedData}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm"
+              className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
             >
+              <FiFileText className="w-4 h-4 mr-2 inline" />
               Seed Demo Data
             </button>
           </div>
+        </div>
+      </div>
 
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-8 py-12">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="p-8">
           {/* Workspace Type Card Selector */}
-          <div className="flex items-center gap-4 mb-8 justify-center flex-wrap overflow-x-auto pb-2">
+            <div className="mb-12">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">Select Workspace Type</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 justify-center">
             {typesLoading ? (
-              <div className="text-center text-gray-500">Loading workspace types...</div>
+                <div className="col-span-full text-center py-12">
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <FiFileText className="w-6 h-6 animate-pulse text-primary" />
+                  </div>
+                  <p className="text-gray-600 font-medium">Loading workspace types...</p>
+                </div>
             ) : workspaceTypes.length === 0 ? (
-              <div className="text-center text-gray-500">
-                No workspace types found. Click "Seed Demo Data" to add default types.
+                <div className="col-span-full text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <FiFileText className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Workspace Types Found</h3>
+                  <p className="text-gray-600 mb-6">Click "Seed Demo Data" to add default types.</p>
               </div>
             ) : (
               workspaceTypes.map((type, idx) => (
                 <button
                   key={type.id}
-                  className={`flex flex-col items-center justify-center px-5 py-3 rounded-xl border shadow-sm transition-all min-w-[140px] max-w-[180px] mx-1 my-1 focus:outline-none focus:ring-2 focus:ring-primary/50
+                    className={`group flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 hover:-translate-y-1 hover:shadow-xl
                     ${selectedType && selectedType.id === type.id
-                      ? 'bg-primary text-white border-primary scale-105 shadow-lg'
-                      : 'bg-white text-slate-800 border-gray-200 hover:bg-primary/10 hover:border-primary/30'}
+                        ? 'bg-gradient-to-br from-primary to-primary/90 text-white border-primary shadow-lg scale-105'
+                        : 'bg-white text-gray-800 border-gray-200 hover:bg-primary/5 hover:border-primary/30 shadow-md'}
                   `}
                   onClick={() => {
                     setSelectedType(type);
                     setSelectedSection(null);
                   }}
                 >
-                  <FiFileText className={`w-7 h-7 mb-2 ${selectedType && selectedType.id === type.id ? 'text-white' : 'text-slate-400'}`} />
-                  <span className="font-semibold text-base truncate w-full text-center">{type.name}</span>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-all duration-300 ${
+                      selectedType && selectedType.id === type.id 
+                        ? 'bg-white/20' 
+                        : 'bg-primary/10 group-hover:bg-primary/15'
+                    }`}>
+                      <FiFileText className={`w-6 h-6 ${selectedType && selectedType.id === type.id ? 'text-white' : 'text-primary'}`} />
+                    </div>
+                    <span className="font-semibold text-sm text-center leading-tight">{type.name}</span>
                 </button>
               ))
             )}
             <button
-              className="flex flex-col items-center justify-center px-5 py-3 rounded-xl border-2 border-dashed border-primary text-primary bg-white hover:bg-primary/10 transition-all min-w-[140px] max-w-[180px] mx-1 my-1 focus:outline-none"
+                className="group flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-primary/30 text-primary bg-white hover:bg-primary/5 transition-all duration-300 focus:outline-none hover:-translate-y-1 hover:shadow-lg hover:border-primary/50"
               onClick={() => setShowAddTypeModal(true)}
               type="button"
             >
-              <span className="text-2xl font-bold mb-1">+</span>
-              <span className="font-semibold text-base">Add Workspace Type</span>
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-3 group-hover:bg-primary/15 transition-colors duration-300">
+                  <FiPlus className="w-6 h-6 text-primary" />
+                </div>
+                <span className="font-semibold text-sm text-center">Add Type</span>
             </button>
+            </div>
           </div>
 
           {/* Section Selector for Selected Type */}
           {selectedType && (
-            <div className="flex flex-col gap-3 mb-8 justify-center items-center w-full">
-              <div className="flex gap-2 flex-wrap items-center justify-center">
+            <div className="border-t border-gray-200 pt-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">
+                Sections for {selectedType.name}
+              </h2>
+              <div className="flex gap-3 flex-wrap justify-center mb-8">
                 {sectionsLoading ? (
-                  <div className="text-center text-gray-500">Loading sections...</div>
+                  <div className="text-center text-gray-600 py-4">
+                    <FiLoader className="w-5 h-5 animate-spin mx-auto mb-2" />
+                    Loading sections...
+                  </div>
                 ) : (selectedType?.sections?.length ?? 0) === 0 ? (
-                  <div className="text-center text-gray-500">No sections found for this type.</div>
+                  <div className="text-center text-gray-500 py-8">
+                    <p className="mb-2">No sections found for this type.</p>
+                  </div>
                 ) : (
                   selectedType?.sections?.map((section, idx) => (
                     <button
                       key={section.id}
-                      className={`px-4 py-1 rounded-full font-medium border transition-colors text-sm whitespace-nowrap
+                      className={`px-4 py-2 rounded-xl font-medium border transition-all duration-200 text-sm whitespace-nowrap hover:shadow-md
                         ${selectedSection && selectedSection.id === section.id
-                          ? 'bg-primary text-white border-primary shadow'
+                          ? 'bg-primary text-white border-primary shadow-lg'
                           : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-primary/10 hover:border-primary/30'}
                       `}
                       onClick={() => {
@@ -366,42 +411,53 @@ const PromptTemplatePage: React.FC = () => {
                   ))
                 )}
                 <button
-                  className="px-4 py-1 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors text-sm ml-2"
+                  className="px-4 py-2 bg-gradient-to-r from-primary to-primary/90 text-white rounded-xl font-medium hover:from-primary/90 hover:to-primary transition-all duration-200 text-sm shadow-md hover:shadow-lg"
                   onClick={() => setShowAddSectionModal((prev) => !prev)}
                   type="button"
                 >
-                  + Add Section
+                  <FiPlus className="w-4 h-4 mr-1 inline" />
+                  Add Section
                 </button>
               </div>
 
               {/* Inline Add Section Form */}
               {showAddSectionModal && (
-                <form
-                  className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-lg p-6 mt-4 flex flex-col gap-4"
+                <div className="max-w-2xl mx-auto mt-8">
+                  <form
+                    className="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-2xl shadow-lg p-8 flex flex-col gap-6"
                   onSubmit={(e) => {
                     e.preventDefault();
                     handleAddSection();
                   }}
                 >
-                  <h2 className="text-xl font-bold mb-2">Add Section</h2>
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">Add New Section</h3>
+                      <p className="text-gray-600">Create a new section template for this workspace type</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Section Name</label>
                   <input
                     type="text"
-                    className="w-full border rounded p-2 mb-2"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 shadow-sm"
                     placeholder="Section name..."
                     value={newSectionName}
                     onChange={(e) => setNewSectionName(e.target.value)}
                   />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Default Prompt</label>
                   <textarea
-                    className="w-full border rounded p-2 mb-2"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 shadow-sm resize-none"
                     placeholder="Prompt for this section..."
                     value={newSectionPrompt}
                     onChange={(e) => setNewSectionPrompt(e.target.value)}
-                    rows={4}
+                        rows={5}
                   />
-                  <div className="flex justify-end gap-2">
+                    </div>
+                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                     <button
                       type="button"
-                      className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                        className="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition-all duration-200"
                       onClick={() => {
                         setShowAddSectionModal(false);
                         setNewSectionName('');
@@ -412,35 +468,43 @@ const PromptTemplatePage: React.FC = () => {
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 rounded bg-primary text-white hover:bg-primary/90"
+                        className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary/90 text-white hover:from-primary/90 hover:to-primary font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
                       disabled={!newSectionName.trim() || !newSectionPrompt.trim()}
                     >
                       Add
                     </button>
                   </div>
                 </form>
+                </div>
               )}
             </div>
           )}
 
           {/* Prompt for Selected Section */}
           {selectedType && selectedSection ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white rounded-md border border-gray-100 p-4 flex flex-col col-span-2">
-                <div className="font-medium text-gray-900 mb-2 text-lg">{selectedSection.name}</div>
+            <div className="border-t border-gray-200 pt-8">
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border border-gray-200 p-8">
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedSection.name}</h3>
+                    <p className="text-gray-600">Customize the AI prompt for this section</p>
+                  </div>
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">Section Prompt</label>
                 <textarea
                   value={editablePrompt}
                   onChange={(e) => setEditablePrompt(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:border-primary mb-4"
-                  rows={5}
+                      className="w-full bg-white border border-gray-300 rounded-xl px-4 py-4 text-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm resize-none"
+                      rows={8}
                   placeholder="Edit the prompt for this section..."
                 />
+                  </div>
                 {/* Workspace selector if not navigated from a workspace */}
                 {!location.state?.workspaceId && (
-                  <div className="mb-4">
-                    <label className="block mb-1 font-medium">Workspace</label>
+                    <div className="mb-6">
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">Target Workspace</label>
                     <select
-                      className="w-full border rounded p-2"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 shadow-sm"
                       value={selectedWorkspaceId}
                       onChange={(e) => setSelectedWorkspaceId(e.target.value)}
                     >
@@ -453,22 +517,45 @@ const PromptTemplatePage: React.FC = () => {
                     </select>
                   </div>
                 )}
+                  <div className="text-center">
                 <button
-                  className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm mt-auto"
+                      className="px-8 py-3 bg-gradient-to-r from-primary to-primary/90 text-white rounded-xl font-semibold hover:from-primary/90 hover:to-primary transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
                   onClick={handleSaveToWorkspace}
                   disabled={saving || (!location.state?.workspaceId && !selectedWorkspaceId)}
                 >
-                  {saving ? 'Saving...' : 'Save to Workspace'}
+                      {saving ? (
+                        <div className="flex items-center space-x-2">
+                          <FiLoader className="w-4 h-4 animate-spin" />
+                          <span>Saving...</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center space-x-2">
+                          <FiSave className="w-4 h-4" />
+                          <span>Save to Workspace</span>
+                        </div>
+                      )}
                 </button>
+                  </div>
               </div>
             </div>
           ) : (
-            <div className="text-center text-gray-500 py-12 text-lg">
+            <div className="text-center py-20">
+              <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <FiFileText className="w-10 h-10 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
               {selectedType
-                ? 'Select a section to view its prompt.'
-                : 'Select a workspace type to view prompts.'}
+                  ? 'Select a Section'
+                  : 'Choose a Workspace Type'}
+              </h3>
+              <p className="text-gray-600">
+                {selectedType
+                  ? 'Pick a section above to view and edit its prompt template.'
+                  : 'Start by selecting a workspace type to see its available sections.'}
+              </p>
             </div>
           )}
+          </div>
         </div>
 
         {/* Add Workspace Type Modal */}
@@ -478,21 +565,30 @@ const PromptTemplatePage: React.FC = () => {
             onRequestClose={() => setShowAddTypeModal(false)}
             contentLabel="Add Workspace Type"
             ariaHideApp={false}
-            className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30"
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
             overlayClassName=""
           >
-            <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-              <h2 className="text-xl font-bold mb-4">Add Workspace Type</h2>
+            <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
+              <div className="text-center mb-6">
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <FiPlus className="w-6 h-6 text-primary" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">Add Workspace Type</h2>
+                <p className="text-gray-600">Create a new workspace type template</p>
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Type Name</label>
               <input
                 type="text"
-                className="w-full border rounded p-2 mb-4"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 shadow-sm"
                 placeholder="Workspace type name..."
                 value={newTypeName}
                 onChange={(e) => setNewTypeName(e.target.value)}
               />
-              <div className="flex justify-end gap-2">
+              </div>
+              <div className="flex justify-end gap-3">
                 <button
-                  className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                  className="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition-all duration-200"
                   onClick={() => {
                     setShowAddTypeModal(false);
                     setNewTypeName('');
@@ -501,7 +597,7 @@ const PromptTemplatePage: React.FC = () => {
                   Cancel
                 </button>
                 <button
-                  className="px-4 py-2 rounded bg-primary text-white hover:bg-primary/90"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary/90 text-white hover:from-primary/90 hover:to-primary font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
                   onClick={handleAddType}
                   disabled={!newTypeName.trim()}
                 >

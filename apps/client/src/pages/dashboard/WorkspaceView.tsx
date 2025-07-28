@@ -561,38 +561,45 @@ const WorkspaceView: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
-      <div className="bg-white border-b border-gray-200">
-        <div className="px-8 py-6">
+    <div className="min-h-full bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header Section */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="px-8 py-8">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <div className="flex items-center space-x-3 mb-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
                   <button
                     onClick={() => navigate('/dashboard/workspaces')}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    className="p-3 text-gray-400 hover:text-gray-600 transition-all duration-200 rounded-xl hover:bg-gray-100 shadow-sm"
                   >
                     <FiArrowLeft className="w-5 h-5" />
                   </button>
-                  <h1 className="text-2xl font-bold text-gray-900">{workspace.name}</h1>
+                <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
+                  <FiFolder className="w-6 h-6 text-white" />
                 </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{workspace.name}</h1>
                 {workspace.clientName && (
-                  <p className="text-gray-600 ml-8">
-                    Client: <span className="font-semibold">{workspace.clientName}</span>
+                    <div className="flex items-center space-x-4 mt-2">
+                      <span className="text-gray-600">
+                        <span className="font-medium">Client:</span> <span className="font-semibold text-gray-900">{workspace.clientName}</span>
+                      </span>
                     {workspaceTypeName && (
-                      <span className="ml-4">
-                        | Type: <span className="font-semibold">{workspaceTypeName}</span>
+                        <span className="text-gray-400">•</span>
+                        <span className="text-gray-600">
+                          <span className="font-medium">Type:</span> <span className="font-semibold text-gray-900">{workspaceTypeName}</span>
                       </span>
                     )}
-                  </p>
+                    </div>
                 )}
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <button
                   onClick={() => setIsAddContentModalOpen(true)}
-                  className="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center gap-2 text-sm shadow-lg hover:shadow-xl"
                 >
-                  <FiPlus className="w-3 h-3" />
+                  <FiPlus className="w-4 h-4" />
                   Add Content
                 </button>
                 <button
@@ -601,33 +608,40 @@ const WorkspaceView: React.FC = () => {
                       state: { workspaceId: workspace.id, workspaceType: workspace.workspaceType },
                     })
                   }
-                  className="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm"
+                  className="bg-gradient-to-r from-primary to-primary/90 text-white px-5 py-3 rounded-xl font-semibold hover:from-primary/90 hover:to-primary transition-all duration-200 flex items-center gap-2 text-sm shadow-lg hover:shadow-xl"
                 >
-                  <FiZap className="w-3 h-3" />
+                  <FiZap className="w-4 h-4" />
                   Author Proposal
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+        
+        {/* Tabs */}
+        <div className="max-w-7xl mx-auto px-8">
             {/* Tabs */}
-            <div className="flex gap-2 border-b border-gray-200 mt-4">
+          <div className="flex gap-1 border-b border-gray-200">
               <button
-                className={`px-6 py-2 font-semibold text-sm rounded-t-lg focus:outline-none transition-colors ${
+              className={`px-8 py-4 font-semibold text-sm rounded-t-xl focus:outline-none transition-all duration-200 ${
                   tab === 'content'
-                    ? 'bg-white border-x border-t border-primary text-primary -mb-px'
-                    : 'bg-gray-50 text-gray-600 hover:text-primary'
+                    ? 'bg-white border-x-2 border-t-2 border-primary text-primary -mb-px shadow-sm'
+                    : 'bg-gray-50 text-gray-600 hover:text-primary hover:bg-gray-100'
                 }`}
                 onClick={() => setTab('content')}
               >
+                <FiFileText className="w-4 h-4 mr-2 inline" />
                 Content
               </button>
               <button
-                className={`px-6 py-2 font-semibold text-sm rounded-t-lg focus:outline-none transition-colors ${
+              className={`px-8 py-4 font-semibold text-sm rounded-t-xl focus:outline-none transition-all duration-200 ${
                   tab === 'sections'
-                    ? 'bg-white border-x border-t border-primary text-primary -mb-px'
-                    : 'bg-gray-50 text-gray-600 hover:text-primary'
+                    ? 'bg-white border-x-2 border-t-2 border-primary text-primary -mb-px shadow-sm'
+                    : 'bg-gray-50 text-gray-600 hover:text-primary hover:bg-gray-100'
                 }`}
                 onClick={() => setTab('sections')}
               >
+                <FiTag className="w-4 h-4 mr-2 inline" />
                 Sections
               </button>
             </div>
@@ -635,34 +649,44 @@ const WorkspaceView: React.FC = () => {
         </div>
       </div>
 
-      <div className="px-8 py-8">
+      {/* Main Content */}
+      <div className="px-8 py-12">
         <div className="max-w-7xl mx-auto">
           {/* Tab Content */}
           {tab === 'content' && (
             <>
-              <div className="mb-8 space-y-4">
+              {/* Search and Filter Section */}
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8">
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <FiSearch className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <h2 className="text-lg font-bold text-gray-900">Search & Filter Content</h2>
+                  </div>
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     type="text"
                     placeholder="Search sections by content, name, source, or tags..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full md:w-96 pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition duration-200"
+                      className="w-full md:w-96 pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 shadow-sm"
                   />
                 </div>
 
                 {allTags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    <span className="text-sm font-medium text-gray-700 mr-2 py-2">Filter by tags:</span>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Filter by Tags</h3>
+                      <div className="flex flex-wrap gap-3">
                     {allTags.map((tag) => (
                       <button
                         key={tag}
                         onClick={() => toggleTag(tag)}
-                        className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+                          className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all duration-200 ${
                           selectedTags.includes(tag)
-                            ? 'bg-primary text-white border-primary'
-                            : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-primary/10 hover:border-primary/20'
+                              ? 'bg-primary text-white border-primary shadow-md'
+                              : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-primary/10 hover:border-primary/30 hover:shadow-sm'
                         }`}
                       >
                         <FiTag className="inline w-3 h-3 mr-1" />
@@ -677,38 +701,41 @@ const WorkspaceView: React.FC = () => {
                     {selectedTags.length > 0 && (
                       <button
                         onClick={() => setSelectedTags([])}
-                        className="px-3 py-1 rounded-full text-sm font-medium text-gray-500 border border-gray-200 hover:bg-gray-50 transition-colors"
+                          className="px-4 py-2 rounded-xl text-sm font-medium text-gray-500 border border-gray-200 hover:bg-gray-50 transition-all duration-200"
                       >
                         Clear filters
                       </button>
                     )}
+                      </div>
                   </div>
                 )}
 
                 {selectedTags.length > 0 && (
-                  <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-600 bg-blue-50 rounded-lg p-3 border border-blue-200">
                     Showing {filteredData.length} sections
                     {search && ` matching "${search}"`}
                     {selectedTags.length > 0 && ` with tags: ${selectedTags.join(', ')}`}
                   </div>
                 )}
+                </div>
               </div>
 
+              {/* Content Grid */}
               {filteredData.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {filteredData.map((section) => (
                     <div
                       key={section.id}
-                      className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md hover:border-gray-300 transition-all duration-200 group cursor-pointer"
+                      className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-primary/30 transition-all duration-300 group cursor-pointer hover:-translate-y-1"
                     >
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start justify-between mb-6">
                         <div className="flex-1">
                           {section.tags && section.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mb-3">
+                            <div className="flex flex-wrap gap-2 mb-4">
                               {section.tags.map((tag, index) => (
                                 <span
                                   key={index}
-                                  className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium flex items-center"
+                                  className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full font-semibold flex items-center border border-primary/20"
                                 >
                                   <FiTag className="w-3 h-3 mr-1" />
                                   {tag}
@@ -801,10 +828,10 @@ const WorkspaceView: React.FC = () => {
 
                             return (
                               <>
-                                <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                                <h3 className="font-bold text-gray-900 mb-3 line-clamp-2 text-lg">
                                   {heading}
                                 </h3>
-                                <p className="text-gray-700 text-sm leading-relaxed line-clamp-4">
+                                <p className="text-gray-600 leading-relaxed line-clamp-4">
                                   {previewText || 'No content available'}
                                 </p>
                               </>
@@ -814,10 +841,10 @@ const WorkspaceView: React.FC = () => {
                         <div className="flex items-center gap-2 ml-4 flex-shrink-0">
                           <button
                             onClick={(e) => handleViewSection(section, e)}
-                            className="p-1 text-gray-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-primary/10 rounded"
+                            className="p-2 text-gray-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-primary/10 rounded-lg"
                             title="View full content"
                           >
-                            <FiEye className="w-4 h-4" />
+                            <FiEye className="w-5 h-5" />
                           </button>
                           <button
                             onClick={async () => {
@@ -837,34 +864,34 @@ const WorkspaceView: React.FC = () => {
                                 }
                               }
                             }}
-                            className="p-1 text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-100 rounded"
+                            className="p-2 text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-100 rounded-lg"
                             title="Delete content chunk"
                           >
-                            <FiX className="w-4 h-4" />
+                            <FiX className="w-5 h-5" />
                           </button>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between text-sm text-gray-500 pt-6 border-t border-gray-100">
                         <div className="flex items-center">
                           <FiFileText className="w-4 h-4 mr-1" />
-                          {section.content_source}
+                          <span className="font-medium">{section.content_source}</span>
                         </div>
                         <div className="flex items-center">
-                          <span>{section.content.split(' ').length} words</span>
+                          <span className="font-medium">{section.content.split(' ').length} words</span>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-20">
-                  <div className="max-w-md mx-auto">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <FiFileText className="w-8 h-8 text-gray-400" />
+                <div className="text-center py-24">
+                  <div className="max-w-lg mx-auto">
+                    <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg">
+                      <FiFileText className="w-12 h-12 text-gray-400" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">No sections found</h3>
-                    <p className="text-gray-600 mb-8">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">No Content Found</h3>
+                    <p className="text-gray-600 mb-10 text-lg leading-relaxed">
                       {search || selectedTags.length > 0
                         ? 'Try adjusting your search or filters.'
                         : 'Get started by adding some content to this workspace.'}
@@ -872,9 +899,9 @@ const WorkspaceView: React.FC = () => {
                     {!search && selectedTags.length === 0 && (
                       <button
                         onClick={() => setIsAddContentModalOpen(true)}
-                        className="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                        className="bg-gradient-to-r from-primary to-primary/90 text-white px-8 py-4 rounded-xl font-semibold hover:from-primary/90 hover:to-primary transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                       >
-                        <FiPlus className="w-4 h-4 inline mr-2" />
+                        <FiPlus className="w-5 h-5 inline mr-2" />
                         Add Content
                       </button>
                     )}
@@ -884,26 +911,40 @@ const WorkspaceView: React.FC = () => {
             </>
           )}
           {tab === 'sections' && (
-            <div className="flex gap-6 min-h-[400px]">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+              <div className="flex gap-0 min-h-[500px]">
               {/* Left: Section List */}
-              <div className="w-64 bg-gray-50 border rounded-lg p-3 flex-shrink-0 overflow-y-auto max-h-[500px]">
-                <h3 className="text-base font-semibold mb-3 text-gray-700">Sections</h3>
+                <div className="w-80 bg-gradient-to-b from-gray-50 to-gray-100 border-r border-gray-200 p-6 flex-shrink-0 overflow-y-auto">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <FiTag className="w-4 h-4 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900">Section Templates</h3>
+                  </div>
                 {sectionTemplatesLoading ? (
-                  <div className="text-gray-500 text-sm">Loading...</div>
+                    <div className="text-center py-8">
+                      <FiLoader className="w-6 h-6 animate-spin text-primary mx-auto mb-2" />
+                      <p className="text-gray-600 text-sm">Loading...</p>
+                    </div>
                 ) : sectionTemplates.length === 0 ? (
-                  <div className="text-gray-400 text-sm">No section templates found.</div>
+                    <div className="text-center py-12">
+                      <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <FiTag className="w-6 h-6 text-gray-400" />
+                      </div>
+                      <p className="text-gray-500 text-sm">No section templates found.</p>
+                    </div>
                 ) : (
-                  <ul className="space-y-1">
+                    <ul className="space-y-2">
                     {sectionTemplates.map((section) => {
                       const sectionIdStr = String(section.id);
                       const isSelected = selectedSectionId === sectionIdStr;
                       return (
                         <li key={sectionIdStr}>
                           <button
-                            className={`w-full text-left px-3 py-2 rounded font-medium transition-colors text-sm ${
+                              className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-all duration-200 text-sm ${
                               isSelected
-                                ? 'bg-primary text-white'
-                                : 'bg-white text-gray-800 hover:bg-primary/10'
+                                  ? 'bg-gradient-to-r from-primary to-primary/90 text-white shadow-md'
+                                  : 'bg-white text-gray-800 hover:bg-primary/10 border border-gray-200 hover:border-primary/30 hover:shadow-sm'
                             }`}
                             onClick={() => {
                               setSelectedSectionId(sectionIdStr);
@@ -920,26 +961,56 @@ const WorkspaceView: React.FC = () => {
               </div>
 
               {/* Right: Prompts for selected section */}
-              <div className="flex-1 bg-white border rounded-lg p-6 min-h-[300px]">
+                <div className="flex-1 p-8">
                 {!selectedSectionId ? (
-                  <div className="text-gray-400 text-center mt-20">Select a section to view its prompts.</div>
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                          <FiFileText className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Select a Section</h3>
+                        <p className="text-gray-600">Choose a section from the left to view its prompts.</p>
+                      </div>
+                    </div>
                 ) : promptsLoading ? (
-                  <div className="text-gray-500 text-center mt-20">Loading prompts...</div>
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center">
+                        <FiLoader className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                        <p className="text-gray-600 font-medium">Loading prompts...</p>
+                      </div>
+                    </div>
                 ) : sectionPrompts[selectedSectionId] && sectionPrompts[selectedSectionId].length > 0 ? (
                   <div>
-                    <h4 className="text-lg font-semibold mb-4 text-primary">Prompts</h4>
-                    <ul className="space-y-4">
+                    <div className="flex items-center space-x-3 mb-6">
+                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <FiFileText className="w-4 h-4 text-primary" />
+                      </div>
+                      <h4 className="text-xl font-bold text-gray-900">Available Prompts</h4>
+                    </div>
+                    <div className="space-y-4">
                       {sectionPrompts[selectedSectionId].map((prompt: any, idx: number) => (
-                        <li key={idx} className="bg-gray-50 border rounded p-4 text-gray-800">
-                          <div className="font-medium text-gray-700 mb-2">Prompt {idx + 1}</div>
-                          <div className="whitespace-pre-line text-sm">{prompt.prompt}</div>
-                        </li>
+                        <div key={idx} className="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-6 shadow-sm">
+                          <div className="flex items-center space-x-2 mb-3">
+                            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-semibold">#{idx + 1}</span>
+                            <div className="font-semibold text-gray-900">Prompt Template</div>
+                          </div>
+                          <div className="whitespace-pre-line text-gray-700 leading-relaxed">{prompt.prompt}</div>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 ) : (
-                  <div className="text-gray-400 text-center mt-20">No prompts found for this section.</div>
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                          <FiFileText className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No Prompts Found</h3>
+                        <p className="text-gray-600">This section doesn't have any prompts yet.</p>
+                      </div>
+                    </div>
                 )}
+              </div>
               </div>
             </div>
           )}
@@ -947,10 +1018,14 @@ const WorkspaceView: React.FC = () => {
       </div>
 
       {viewingSection && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+            <div className="flex items-center justify-between p-8 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
               <div className="flex-1">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <FiFileText className="w-5 h-5 text-primary" />
+                  </div>
                 <h2 className="text-xl font-semibold text-gray-900">
                   {(() => {
                     let parsedContent: any[] = [];
@@ -967,31 +1042,33 @@ const WorkspaceView: React.FC = () => {
                     return viewingSection.name || 'Untitled Section';
                   })()}
                 </h2>
-                <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                </div>
+                <div className="flex items-center gap-6 text-sm text-gray-500">
                   <div className="flex items-center">
                     <FiFileText className="w-4 h-4 mr-1" />
-                    {viewingSection.content_source}
+                    <span className="font-medium">{viewingSection.content_source}</span>
                   </div>
+                  <span className="text-gray-300">•</span>
                   <div className="flex items-center">
-                    <span>{viewingSection.content.split(' ').length} words</span>
+                    <span className="font-medium">{viewingSection.content.split(' ').length} words</span>
                   </div>
                 </div>
               </div>
               <button
                 onClick={closeModal}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="p-3 text-gray-400 hover:text-gray-600 transition-all duration-200 rounded-xl hover:bg-gray-100"
               >
-                <FiX className="w-5 h-5" />
+                <FiX className="w-6 h-6" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-8">
               {viewingSection.tags && viewingSection.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2 mb-6">
                   {viewingSection.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium flex items-center"
+                      className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full font-semibold flex items-center border border-primary/20"
                     >
                       <FiTag className="w-3 h-3 mr-1" />
                       {tag}
@@ -1000,8 +1077,8 @@ const WorkspaceView: React.FC = () => {
                 </div>
               )}
 
-              <div className="prose max-w-none">
-                <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              <div className="prose prose-lg max-w-none">
+                <div className="text-gray-800 leading-relaxed whitespace-pre-wrap bg-gray-50 rounded-xl p-6 border border-gray-200">
                   {(() => {
                     // Debug: log the content
                     console.log('Modal viewingSection.content:', viewingSection.content);
@@ -1044,10 +1121,12 @@ const WorkspaceView: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-t border-gray-200 p-6">
+            <div className="border-t border-gray-200 p-8 bg-gradient-to-r from-gray-50 to-white">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-500">Source: {viewingSection.content_source}</div>
-                <div className="flex gap-3">
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium">Source:</span> {viewingSection.content_source}
+                </div>
+                <div className="flex gap-4">
                   <button
                     onClick={async () => {
                       if (window.confirm('Are you sure you want to delete this content chunk?')) {
@@ -1067,13 +1146,13 @@ const WorkspaceView: React.FC = () => {
                         }
                       }
                     }}
-                    className="px-4 py-2 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                    className="px-6 py-3 text-red-600 border-2 border-red-200 rounded-xl hover:bg-red-50 transition-all duration-200 font-medium"
                   >
                     Delete
                   </button>
                   <button
                     onClick={closeModal}
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                    className="px-6 py-3 bg-gradient-to-r from-primary to-primary/90 text-white rounded-xl hover:from-primary/90 hover:to-primary transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
                   >
                     Close
                   </button>
