@@ -216,52 +216,84 @@ const IngestForm: React.FC<IngestFormProps> = ({
       (uploadType === 'url' && webLinks.trim().length > 0 && !errors.url));
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-black mb-3">Content Ingestion</h2>
-        <p className="text-neutral-600">Upload new documents or web content</p>
+    <div className="w-full">
+      {/* Header Section */}
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl shadow-lg mb-6">
+          <FiUpload className="w-8 h-8 text-white" />
+        </div>
+        <h2 className="text-4xl font-bold text-gray-900 mb-4 tracking-tight">Content Ingestion</h2>
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+          Transform your documents and web content into structured, searchable knowledge for your proposals
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      {/* Upload Type Selection */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div
-          className={`p-6 border-2 rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
+          className={`group p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl ${
             uploadType === 'file'
-              ? 'border-primary bg-gradient-to-br from-primary/5 to-primary/10 shadow-md'
-              : 'border-gray-200 hover:border-gray-300'
+              ? 'border-primary bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg scale-105'
+              : 'border-gray-200 hover:border-primary/30 hover:shadow-lg'
           }`}
           onClick={() => !isProcessing && setUploadType('file')}
         >
-          <div className="flex items-center mb-4">
-            <div className="p-2 bg-primary/10 rounded-lg mr-3">
-              <FiFile className="w-6 h-6 text-primary" />
+          <div className="flex items-center mb-6">
+            <div className={`p-3 rounded-xl mr-4 transition-all duration-300 ${
+              uploadType === 'file' 
+                ? 'bg-primary/20 shadow-md' 
+                : 'bg-primary/10 group-hover:bg-primary/15'
+            }`}>
+              <FiFile className="w-7 h-7 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold text-black">File Upload</h3>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-1">Document Upload</h3>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">PDF</span>
+                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">DOCX</span>
+              </div>
+            </div>
           </div>
-          <p className="text-neutral-600 text-sm">Upload PDF or DOCX documents for extraction</p>
+          <p className="text-gray-600 leading-relaxed">
+            Upload PDF or DOCX documents to extract structured content, tables, and key information for your workspace
+          </p>
         </div>
 
         <div
-          className={`p-6 border-2 rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
+          className={`group p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl ${
             uploadType === 'url'
-              ? 'border-primary bg-gradient-to-br from-primary/5 to-primary/10 shadow-md'
-              : 'border-gray-200 hover:border-gray-300'
+              ? 'border-primary bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg scale-105'
+              : 'border-gray-200 hover:border-primary/30 hover:shadow-lg'
           }`}
           onClick={() => !isProcessing && setUploadType('url')}
         >
-          <div className="flex items-center mb-4">
-            <div className="p-2 bg-primary/10 rounded-lg mr-3">
-              <FiGlobe className="w-6 h-6 text-primary" />
+          <div className="flex items-center mb-6">
+            <div className={`p-3 rounded-xl mr-4 transition-all duration-300 ${
+              uploadType === 'url' 
+                ? 'bg-primary/20 shadow-md' 
+                : 'bg-primary/10 group-hover:bg-primary/15'
+            }`}>
+              <FiGlobe className="w-7 h-7 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold text-black">Web Link</h3>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-1">Web Content</h3>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">Articles</span>
+                <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">Pages</span>
+              </div>
+            </div>
           </div>
-          <p className="text-neutral-600 text-sm">Extract content from web pages and articles</p>
+          <p className="text-gray-600 leading-relaxed">
+            Extract and process content from web pages, articles, and online resources to build your knowledge base
+          </p>
         </div>
       </div>
 
-      <div className="mb-8">
+      {/* Content Input Section */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-12">
         {uploadType === 'file' && (
           <div className="space-y-4">
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-primary transition-colors">
+            <div className="border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center hover:border-primary transition-all duration-300 hover:bg-primary/5 group">
               <input
                 type="file"
                 accept=".pdf,.doc,.docx"
@@ -275,9 +307,18 @@ const IngestForm: React.FC<IngestFormProps> = ({
                 htmlFor="file-upload"
                 className={`cursor-pointer ${isProcessing ? 'cursor-not-allowed opacity-50' : ''}`}
               >
-                <FiUpload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-neutral-600">Click to upload or drag and drop</p>
-                <p className="text-sm text-neutral-500 mt-1">PDF, DOC, DOCX up to 10MB</p>
+                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary/10 transition-colors duration-300">
+                  <FiUpload className="w-8 h-8 text-gray-400 group-hover:text-primary transition-colors duration-300" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Drop files here or click to browse</h3>
+                <p className="text-gray-600 mb-4">Upload your documents to get started</p>
+                <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
+                  <span className="bg-gray-100 px-3 py-1 rounded-full">PDF</span>
+                  <span className="bg-gray-100 px-3 py-1 rounded-full">DOC</span>
+                  <span className="bg-gray-100 px-3 py-1 rounded-full">DOCX</span>
+                  <span className="text-gray-400">•</span>
+                  <span>Up to 10MB</span>
+                </div>
               </label>
             </div>
 
@@ -288,21 +329,27 @@ const IngestForm: React.FC<IngestFormProps> = ({
             )}
 
             {selectedFiles.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-neutral-700">
+              <div className="bg-green-50 rounded-xl p-4 border border-green-200">
+                <p className="text-sm font-semibold text-green-800 mb-3 flex items-center">
+                  <FiFile className="w-4 h-4 mr-2" />
                   Selected Files ({selectedFiles.length}):
                 </p>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {selectedFiles.map((file, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-white border border-green-200 rounded-lg shadow-sm"
                     >
-                      <span className="text-green-700 text-sm">{file.name}</span>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <FiFile className="w-4 h-4 text-green-600" />
+                        </div>
+                        <span className="text-green-800 text-sm font-medium">{file.name}</span>
+                      </div>
                       <button
                         onClick={() => removeFile(index)}
                         disabled={isProcessing}
-                        className="text-red-500 hover:text-red-700 text-sm"
+                        className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
                       >
                         <BiTrash className="w-4 h-4" />
                       </button>
@@ -316,16 +363,21 @@ const IngestForm: React.FC<IngestFormProps> = ({
 
         {uploadType === 'url' && (
           <div className="space-y-4">
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Web URLs
+              </label>
+            </div>
             <textarea
-              placeholder="https://example.com/article (one per line or comma separated)"
+              placeholder="https://example.com/article&#10;https://company.com/whitepaper&#10;&#10;Enter one URL per line or separate with commas"
               value={webLinks}
               onChange={handleUrlChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-              rows={4}
+              className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-mono resize-none"
+              rows={6}
               disabled={isProcessing}
             />
             {errors.url && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
                 <p className="text-red-600 text-sm">{errors.url}</p>
               </div>
             )}
@@ -334,25 +386,32 @@ const IngestForm: React.FC<IngestFormProps> = ({
 
         {uploadType === 'existing' && (
           <div className="space-y-4">
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Search Existing Sources
+              </label>
+            </div>
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search existing sources..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               />
             </div>
             {loadingExisting ? (
-              <div className="text-center py-8">
-                <FiLoader className="w-8 h-8 animate-spin text-primary mx-auto mb-2" />
-                <p className="text-gray-500">Loading existing sources...</p>
+              <div className="text-center py-12">
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <FiLoader className="w-6 h-6 animate-spin text-primary" />
+                </div>
+                <p className="text-gray-600 font-medium">Loading existing sources...</p>
               </div>
             ) : (
-              <div className="max-h-64 overflow-y-auto space-y-2">
+              <div className="max-h-80 overflow-y-auto space-y-3 border border-gray-200 rounded-xl p-4">
                 {filteredExistingSources.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-12 text-gray-500">
                     {existingSources.length === 0
                       ? 'No existing sources found'
                       : 'No sources match your search'}
@@ -361,10 +420,10 @@ const IngestForm: React.FC<IngestFormProps> = ({
                   filteredExistingSources.map((source) => (
                     <div
                       key={source.id}
-                      className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                      className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 ${
                         selectedSources.find((s) => s.id === source.id)
-                          ? 'border-primary bg-primary/5'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-primary bg-primary/5 shadow-md'
+                          : 'border-gray-200 hover:border-primary/30 hover:shadow-sm'
                       }`}
                       onClick={() => toggleSourceSelection(source)}
                     >
@@ -372,7 +431,7 @@ const IngestForm: React.FC<IngestFormProps> = ({
                         <div className="flex items-center space-x-3">
                           {getSourceIcon(source.type)}
                           <div>
-                            <h4 className="font-medium text-black">{source.name}</h4>
+                            <h4 className="font-semibold text-gray-900">{source.name}</h4>
                             <p className="text-sm text-gray-500">
                               {source.type.toUpperCase()} •{' '}
                               {new Date(source.created_at).toLocaleDateString()}
@@ -383,7 +442,7 @@ const IngestForm: React.FC<IngestFormProps> = ({
                           type="checkbox"
                           checked={!!selectedSources.find((s) => s.id === source.id)}
                           onChange={() => toggleSourceSelection(source)}
-                          className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary"
+                          className="w-5 h-5 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary"
                         />
                       </div>
                     </div>
@@ -392,8 +451,9 @@ const IngestForm: React.FC<IngestFormProps> = ({
               </div>
             )}
             {selectedSources.length > 0 && (
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-blue-800 text-sm">
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                <p className="text-blue-800 text-sm font-medium flex items-center">
+                  <FiFile className="w-4 h-4 mr-2" />
                   {selectedSources.length} source{selectedSources.length !== 1 ? 's' : ''} selected
                 </p>
               </div>
@@ -402,29 +462,32 @@ const IngestForm: React.FC<IngestFormProps> = ({
         )}
       </div>
 
+      {/* Submit Button */}
+      <div className="text-center">
       <form onSubmit={handleSubmit}>
         <button
           type="submit"
           disabled={!canSubmit}
-          className={`w-full py-4 px-8 rounded-xl font-semibold transition-all duration-200 ${
+          className={`px-12 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl ${
             canSubmit
-              ? 'bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl'
-              : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              ? 'bg-gradient-to-r from-primary to-primary/90 text-white hover:from-primary/90 hover:to-primary hover:-translate-y-0.5'
+              : 'bg-gray-200 text-gray-500 cursor-not-allowed shadow-none'
           }`}
         >
           {isProcessing ? (
-            <>
-              <FiLoader className="w-5 h-5 inline mr-3 animate-spin" />
-              Processing Content...
-            </>
+            <div className="flex items-center justify-center space-x-3">
+              <FiLoader className="w-5 h-5 animate-spin" />
+              <span>Processing Content...</span>
+            </div>
           ) : (
-            <>
-              <FiUpload className="w-5 h-5 inline mr-3" />
-              Process Content
-            </>
+            <div className="flex items-center justify-center space-x-3">
+              <FiUpload className="w-5 h-5" />
+              <span>Process Content</span>
+            </div>
           )}
         </button>
       </form>
+      </div>
     </div>
   );
 };
