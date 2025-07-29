@@ -107,14 +107,14 @@ const ProposalAuthoring: React.FC = () => {
       let wsTypeId = selectedWorkspaceObj?.workspace_type;
       console.log('Debug: selectedWorkspaceObj:', selectedWorkspaceObj);
       console.log('Debug: workspaceType:', wsTypeId);
-      
+
       if (wsTypeId && isNaN(Number(wsTypeId))) {
         // If it's a name, look up the ID
         const found = workspaceTypes.find((t) => t.name === wsTypeId);
         wsTypeId = found ? String(found.id) : undefined;
         console.log('Debug: found workspace type by name:', found);
       }
-      
+
       // If we still don't have a valid workspace type ID, try to get it from the workspace name
       if (!wsTypeId && selectedWorkspaceObj?.name) {
         const workspaceName = selectedWorkspaceObj.name.toLowerCase();
@@ -127,7 +127,7 @@ const ProposalAuthoring: React.FC = () => {
         }
         console.log('Debug: inferred workspace type ID:', wsTypeId);
       }
-      
+
       // If we still don't have a workspace type ID, create default sections
       if (!wsTypeId) {
         console.log('Debug: no workspace type found, using default sections');
@@ -144,9 +144,9 @@ const ProposalAuthoring: React.FC = () => {
         setSectionTemplatesLoading(false);
         return;
       }
-      
+
       console.log('Debug: final wsTypeId:', wsTypeId);
-      
+
       if (!wsTypeId) {
         setSectionTemplates([]);
         return;
@@ -193,10 +193,10 @@ const ProposalAuthoring: React.FC = () => {
 
   // Debug logging for section dropdown
   useEffect(() => {
-    console.log('Debug: rendering section dropdown with:', { 
-      selectedWorkspace, 
-      sectionTemplatesLoading, 
-      sectionTemplates: sectionTemplates.length, 
+    console.log('Debug: rendering section dropdown with:', {
+      selectedWorkspace,
+      sectionTemplatesLoading,
+      sectionTemplates: sectionTemplates.length,
       selectedSectionId,
       selectedWorkspaceObj: selectedWorkspaceObj?.name,
       workspaceType: selectedWorkspaceObj?.workspace_type
@@ -351,12 +351,14 @@ const ProposalAuthoring: React.FC = () => {
   const loadWorkspaceContent = async () => {
     if (!selectedWorkspace) return;
 
+    const toastId = toast.loading('Loading workspace content...');
     try {
       const content = await getWorkspaceContent(selectedWorkspace);
       setWorkspaceContent(content);
+      toast.success('Workspace content loaded', { id: toastId });
       console.log('DEBUG: Loaded workspace content:', content);
     } catch (error) {
-      toast.error('Failed to load workspace content');
+      toast.error('Failed to load workspace content', { id: toastId });
       console.error('Error loading workspace content:', error);
     }
   };
@@ -372,6 +374,7 @@ const ProposalAuthoring: React.FC = () => {
     setSelectedSections((prev) =>
       prev.includes(sectionId) ? prev.filter((id) => id !== sectionId) : [...prev, sectionId],
     );
+    toast.success('Section toggled');
   };
 
   const handleGenerate = async () => {
@@ -380,19 +383,18 @@ const ProposalAuthoring: React.FC = () => {
       return;
     }
 
-    // Combine auto-generated prompt and user input
     const combinedPrompt = userPrompt.trim()
       ? `${prompt.trim()}\n\n${userPrompt.trim()}`
       : prompt.trim();
 
     setIsGenerating(true);
+    const toastId = toast.loading('Generating content...');
+    
     try {
       let result;
       if (selectedSections.length > 0) {
-        // If chunks/sections are selected, use them as context
         result = await generateContent(selectedWorkspace, combinedPrompt, selectedSections);
       } else {
-        // If no chunks selected, use the section name and workspace type as a heading
         const sectionHeading = selectedSectionName
           ? `Section: ${selectedSectionName} (Type: ${selectedWorkspaceObj.workspace_type || 'Proposal'})\n\n`
           : '';
@@ -403,9 +405,9 @@ const ProposalAuthoring: React.FC = () => {
         context_tokens: result.context_tokens,
         response_tokens: result.response_tokens
       });
-      toast.success('Content generated successfully!');
+      toast.success('Content generated successfully!', { id: toastId });
     } catch (error) {
-      toast.error('Failed to generate content');
+      toast.error('Failed to generate content', { id: toastId });
       console.error(error);
     } finally {
       setIsGenerating(false);
@@ -419,6 +421,8 @@ const ProposalAuthoring: React.FC = () => {
     }
 
     setIsSaving(true);
+    const toastId = toast.loading('Saving content...');
+    
     try {
       await saveGeneratedContent(
         selectedWorkspace,
@@ -427,10 +431,10 @@ const ProposalAuthoring: React.FC = () => {
         selectedSections,
         tags,
       );
-      toast.success('Content saved successfully!');
+      toast.success('Content saved successfully!', { id: toastId });
       navigate(`/dashboard/workspaces/${selectedWorkspace}`);
     } catch (error) {
-      toast.error('Failed to save content');
+      toast.error('Failed to save content', { id: toastId });
       console.error(error);
     } finally {
       setIsSaving(false);
@@ -440,6 +444,7 @@ const ProposalAuthoring: React.FC = () => {
   const handleRetry = () => {
     setGeneratedContent('');
     setTokenInfo(null);
+    toast.loading('Retrying generation...');
     handleGenerate();
   };
 
@@ -447,11 +452,15 @@ const ProposalAuthoring: React.FC = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
       setNewTag('');
+      toast.success('Tag added successfully');
+    } else if (tags.includes(newTag.trim())) {
+      toast.error('Tag already exists');
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
+    toast.success('Tag removed');
   };
 
   // Calculate token count for selected sections
@@ -465,11 +474,12 @@ const ProposalAuthoring: React.FC = () => {
   };
 
   const copyToClipboard = async (text: string) => {
+    const toastId = toast.loading('Copying to clipboard...');
     try {
       await navigator.clipboard.writeText(text);
-      toast.success('Content copied to clipboard!');
+      toast.success('Copied to clipboard!', { id: toastId });
     } catch (error) {
-      toast.error('Failed to copy content');
+      toast.error('Failed to copy to clipboard', { id: toastId });
       console.error('Error copying content:', error);
     }
   };
@@ -658,7 +668,7 @@ const ProposalAuthoring: React.FC = () => {
                 {!sectionTemplatesLoading && sectionTemplates.length === 0 && (
                   <div className="text-xs text-gray-500 mt-2">
                     No sections found for this workspace type.
-                    <button 
+                    <button
                       onClick={async () => {
                         try {
                           const res = await fetch(`${API.BASE_URL()}/api/prompt-templates/seed`, {

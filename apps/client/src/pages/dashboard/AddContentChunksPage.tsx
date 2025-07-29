@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { FiArrowLeft, FiLoader } from 'react-icons/fi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSections } from '../../hooks/useSections';
+
 
 const AddContentChunksPage: React.FC = () => {
   const { sourceId, id: workspaceId } = useParams<{ sourceId: string; id: string }>();
@@ -69,10 +71,18 @@ const AddContentChunksPage: React.FC = () => {
         tags: [],
       };
     });
-    // Use the URL as filename if present, otherwise fallback to sourceName
     const filename = sourceUrl || sourceName;
-    await createSections(parseInt(workspaceId), filename, sections);
-    navigate(`/dashboard/workspaces/${workspaceId}`);
+    // Show toast while saving, and update on success/error
+    toast.promise(
+      createSections(parseInt(workspaceId), filename, sections).then(() => {
+        navigate(`/dashboard/workspaces/${workspaceId}`);
+      }),
+      {
+        loading: 'Adding chunks to workspace...',
+        success: 'Chunks added to workspace successfully!',
+        error: 'Failed to add chunks to workspace.',
+      },
+    );
   };
 
   // Helper to get a label for a chunk

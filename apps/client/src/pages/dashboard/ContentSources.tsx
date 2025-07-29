@@ -24,6 +24,8 @@ const ContentSources: React.FC = () => {
   }, []);
 
   const fetchSources = async () => {
+    // Show loading toast while fetching sources
+    const toastId = toast.loading('Loading content sources...');
     try {
       const response = await fetch(
         `${API.BASE_URL()}${API.ENDPOINTS.SOURCES.BASE_URL()}${API.ENDPOINTS.SOURCES.LIST()}`,
@@ -31,17 +33,23 @@ const ContentSources: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setSources(data.sources || []);
+        toast.success('Content sources loaded', { id: toastId });
+      } else {
+        toast.error('Failed to load content sources', { id: toastId });
       }
     } catch (error) {
       console.error('Error fetching sources:', error);
-      toast.error('Failed to load content sources');
+      toast.error('Failed to load content sources', { id: toastId });
     } finally {
       setLoading(false);
+      toast.dismiss(toastId);
     }
   };
 
   const handleDeleteSource = async (sourceId: number) => {
     if (confirm('Are you sure you want to delete this content source?')) {
+      // Show loading toast while deleting
+      const toastId = toast.loading('Deleting content source...');
       try {
         const response = await fetch(
           `${API.BASE_URL()}${API.ENDPOINTS.SOURCES.BASE_URL()}${API.ENDPOINTS.SOURCES.DELETE_SOFT(sourceId)}`,
@@ -49,11 +57,15 @@ const ContentSources: React.FC = () => {
         );
         if (response.ok) {
           setSources((prev) => prev.filter((s) => s.id !== sourceId));
-          toast.success('Content source deleted');
+          toast.success('Content source deleted', { id: toastId });
+        } else {
+          toast.error('Failed to delete content source', { id: toastId });
         }
       } catch (error) {
         console.error('Error deleting source:', error);
-        toast.error('Failed to delete content source');
+        toast.error('Failed to delete content source', { id: toastId });
+      } finally {
+        toast.dismiss(toastId);
       }
     }
   };
@@ -87,6 +99,12 @@ const ContentSources: React.FC = () => {
       </div>
     );
   }
+
+  // Add toast for navigation actions
+  const handleUploadContent = () => {
+    toast('Navigating to upload content...');
+    navigate('/dashboard/content-ingestion');
+  };
 
   return (
     <div className="p-8">
@@ -126,7 +144,7 @@ const ContentSources: React.FC = () => {
               : `No ${selectedType.toUpperCase()} sources found.`}
           </p>
           <button
-            onClick={() => navigate('/dashboard/content-ingestion')}
+            onClick={handleUploadContent}
             className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
           >
             Upload Content

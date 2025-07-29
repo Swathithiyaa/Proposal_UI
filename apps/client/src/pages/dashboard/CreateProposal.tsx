@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
-    FiArrowLeft,
-    FiChevronDown,
-    FiCopy,
-    FiEye,
-    FiFileText,
-    FiLoader,
-    FiRefreshCw,
-    FiSave,
-    FiTag,
-    FiX,
-    FiZap,
+  FiArrowLeft,
+  FiChevronDown,
+  FiCopy,
+  FiEye,
+  FiFileText,
+  FiLoader,
+  FiRefreshCw,
+  FiSave,
+  FiTag,
+  FiX,
+  FiZap,
 } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -44,11 +44,13 @@ const CreateProposal: React.FC = () => {
 
   // Token calculation for selected sections
   const calculateTokens = () => {
-    if (!workspaceContent) return 0;
-    const selected = workspaceContent.sections.filter(section =>
-      selectedSections.includes(section.id)
-    );
-    const totalChars = selected.reduce((sum, section) => sum + (section.content?.length || 0), 0);
+    if (!workspaceContent?.sections) return 0;
+    
+    const totalChars = selectedSections.reduce((sum, sectionId) => {
+      const section = workspaceContent.sections.find(s => s.id === sectionId);
+      return sum + (section?.content?.length || 0);
+    }, 0);
+    
     return Math.ceil(totalChars / 4);
   };
 
@@ -64,7 +66,7 @@ const CreateProposal: React.FC = () => {
     ) {
       // Try to auto-select a workspace of the given type
       if (location.state.type && workspaces.length > 0) {
-        const ws = workspaces.find((w) => w.workspaceType === location.state.type);
+        const ws = workspaces.find((w) => w.workspace_type === location.state.type);
         if (ws) setSelectedWorkspace(ws.id);
       }
       if (location.state.prompt) setPrompt(location.state.prompt);
@@ -80,14 +82,21 @@ const CreateProposal: React.FC = () => {
   }, [selectedWorkspace]);
 
   const loadWorkspaceContent = async () => {
-    if (!selectedWorkspace) return;
+    if (!selectedWorkspace) {
+      toast.error('Please select a workspace first');
+      return;
+    }
 
+    const toastId = toast.loading('Loading workspace content...');
     try {
       const content = await getWorkspaceContent(selectedWorkspace);
       setWorkspaceContent(content);
+      toast.success('Workspace content loaded', { id: toastId });
     } catch (error) {
-      toast.error('Failed to load workspace content');
+      toast.error('Failed to load workspace content', { id: toastId });
       console.error('Error loading workspace content:', error);
+    } finally {
+      toast.dismiss(toastId);
     }
   };
 
@@ -104,15 +113,17 @@ const CreateProposal: React.FC = () => {
     }
 
     setIsGenerating(true);
+    const toastId = toast.loading('Generating content...');
     try {
       const content = await generateContent(selectedWorkspace, prompt, selectedSections);
       setGeneratedContent(content);
-      toast.success('Content generated successfully!');
+      toast.success('Content generated successfully!', { id: toastId });
     } catch (error) {
-      toast.error('Failed to generate content');
+      toast.error('Failed to generate content', { id: toastId });
       console.error(error);
     } finally {
       setIsGenerating(false);
+      toast.dismiss(toastId);
     }
   };
 
@@ -123,6 +134,7 @@ const CreateProposal: React.FC = () => {
     }
 
     setIsSaving(true);
+    const toastId = toast.loading('Saving content...');
     try {
       await saveGeneratedContent(
         selectedWorkspace,
@@ -131,39 +143,27 @@ const CreateProposal: React.FC = () => {
         selectedSections,
         tags,
       );
-      toast.success('Content saved successfully!');
+      toast.success('Content saved successfully!', { id: toastId });
       navigate('/dashboard/proposal-authoring');
     } catch (error) {
-      toast.error('Failed to save content');
+      toast.error('Failed to save content', { id: toastId });
       console.error(error);
     } finally {
       setIsSaving(false);
+      toast.dismiss(toastId);
     }
-  };
-
-  const handleRetry = () => {
-    setGeneratedContent('');
-    handleGenerate();
-  };
-
-  const handleAddTag = () => {
-    if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
-      setNewTag('');
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   const copyToClipboard = async (text: string) => {
+    const toastId = toast.loading('Copying content...');
     try {
       await navigator.clipboard.writeText(text);
-      toast.success('Content copied to clipboard!');
+      toast.success('Content copied to clipboard!', { id: toastId });
     } catch (error) {
-      toast.error('Failed to copy content');
+      toast.error('Failed to copy content', { id: toastId });
       console.error('Error copying content:', error);
+    } finally {
+      toast.dismiss(toastId);
     }
   };
 
@@ -177,72 +177,18 @@ const CreateProposal: React.FC = () => {
     if (!viewingSection) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl max-w-4xl w-full max-h-[80vh] flex flex-col">
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">{viewingSection.name}</h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Source: {viewingSection.source || 'Unknown'}
-              </p>
-            </div>
-            <button
-              onClick={() => setViewingSection(null)}
-              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
-            >
-              <FiX className="w-5 h-5" />
-            </button>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg max-w-2xl w-full p-6">
+          <h3 className="text-lg font-semibold mb-4">{viewingSection.name}</h3>
+          <div className="prose max-w-none">
+            {viewingSection.content}
           </div>
-
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="prose prose-gray max-w-none">
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                {viewingSection.content}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
-            <div className="flex items-center gap-2">
-              {viewingSection.tags && viewingSection.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {viewingSection.tags.map((tag) => (
-                    <span
-                      key={tag.id}
-                      className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs"
-                    >
-                      <FiTag className="w-3 h-3 mr-1" />
-                      {tag.name}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => copyToClipboard(viewingSection.content)}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-primary hover:bg-white rounded-lg transition-colors"
-              >
-                <FiCopy className="w-4 h-4" />
-                Copy Content
-              </button>
-              <button
-                onClick={() => {
-                  handleSectionToggle(viewingSection.id);
-                  setViewingSection(null);
-                }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                  selectedSections.includes(viewingSection.id)
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-primary text-white hover:bg-primary/90'
-                }`}
-              >
-                {selectedSections.includes(viewingSection.id)
-                  ? 'Remove from Context'
-                  : 'Add to Context'}
-              </button>
-            </div>
-          </div>
+          <button
+            onClick={() => setViewingSection(null)}
+            className="mt-4 px-4 py-2 bg-gray-200 rounded-md"
+          >
+            Close
+          </button>
         </div>
       </div>
     );

@@ -76,11 +76,14 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({ onClose, onWorkspaceC
   // Fetch chunks for a source
   const fetchChunksForSource = async (sourceId: number) => {
     if (sourceChunks[sourceId]) return; // already fetched
+    const toastId = toast.loading('Loading chunks...');
     try {
       const res = await fetch(`http://localhost:8000/api/sources/${sourceId}/chunks`);
       const data = await res.json();
       setSourceChunks((prev) => ({ ...prev, [sourceId]: data.chunks || [] }));
-    } catch {
+      toast.success('Chunks loaded successfully', { id: toastId });
+    } catch (error) {
+      toast.error('Failed to load chunks', { id: toastId });
       setSourceChunks((prev) => ({ ...prev, [sourceId]: [] }));
     }
   };
@@ -132,6 +135,9 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({ onClose, onWorkspaceC
         tags: [...prev.tags, currentTag.trim().toLowerCase()],
       }));
       setCurrentTag('');
+      toast.success('Tag added successfully');
+    } else {
+      toast.error('Tag already exists');
     }
   };
 
@@ -140,6 +146,7 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({ onClose, onWorkspaceC
       ...prev,
       tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
+    toast.success('Tag removed');
   };
 
   const handleTagKeyPress = (e: React.KeyboardEvent) => {
@@ -167,7 +174,13 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({ onClose, onWorkspaceC
       return;
     }
 
+    if (!selectedVertical) {
+      toast.error('Vertical is required');
+      return;
+    }
+
     setIsSubmitting(true);
+    const toastId = toast.loading('Creating workspace...');
 
     try {
       const workspaceName = `${selectedVertical} - ${formData.name}`;
@@ -231,19 +244,9 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({ onClose, onWorkspaceC
         source_ids: source_ids.length > 0 ? source_ids : undefined,
         chunks: chunks.length > 0 ? chunks : undefined,
       });
-      
-      console.log('DEBUG: Created workspace with data:', {
-        name: workspaceName,
-        client: formData.clientName.trim(),
-        tags: formData.tags,
-        workspace_type: workspaceType,
-        workspace_type_type: typeof workspaceType,
-        source_ids: source_ids.length > 0 ? source_ids : undefined,
-        chunks: chunks.length > 0 ? chunks : undefined,
-      });
-      console.log('DEBUG: New workspace response:', newWorkspace);
 
-      toast.success('Workspace created successfully!');
+      toast.success('Workspace created successfully!', { id: toastId });
+      
       if (onWorkspaceCreated) {
         onWorkspaceCreated(newWorkspace);
       }
@@ -271,7 +274,7 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({ onClose, onWorkspaceC
         }
       }
     } catch (error: any) {
-      toast.error(error.message || 'Failed to create workspace. Please try again.');
+      toast.error(error.message || 'Failed to create workspace', { id: toastId });
     } finally {
       setIsSubmitting(false);
     }

@@ -11,6 +11,7 @@ import CreateProposal from './pages/dashboard/CreateProposal';
 import DashHome from './pages/dashboard/Home';
 import ProposalAuthoring from './pages/dashboard/ProposalAuthoring';
 // import ProposalView from './pages/dashboard/ProposalView';
+import { Toaster } from 'react-hot-toast';
 import PromptTemplatePage from './components/dashboard/PromptTemplatePage';
 import AddContentChunksPage from './pages/dashboard/AddContentChunksPage';
 import Workspaces from './pages/dashboard/Workspaces';
@@ -100,5 +101,6 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RouterProvider router={router} />
+    <Toaster position="top-right" />
   </StrictMode>,
 );

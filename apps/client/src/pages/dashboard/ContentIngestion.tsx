@@ -5,6 +5,8 @@ import { useLocation, useParams } from 'react-router-dom';
 import ContentResults from '../../components/dashboard/ContentIngestion/ContentResults';
 import IngestForm from '../../components/dashboard/ContentIngestion/IngestForm';
 import ContentSources from './ContentSources';
+import toast from 'react-hot-toast';
+
 
 type ExtractedContent = {
   success: boolean;
@@ -46,6 +48,7 @@ const ContentIngestion: React.FC = () => {
   const handleContentUploaded = (results: ExtractedContent[]) => {
     setExtractedResults(results); // Only keep the latest results, no duplicates
     setIsProcessing(false);
+    toast.success('Content uploaded and processed successfully!');
   };
 
   const handleReset = () => {
